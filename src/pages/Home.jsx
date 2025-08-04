@@ -385,8 +385,8 @@ function Home() {
                   <div className="col-sm-6">
                     <div className="form-floating">
                       <select className="form-select border-0 bg-light" id="service" defaultValue="Steel Welding">
-                        <option selected>Steel Welding</option>
-                        <option value="">Pipe Welding</option>
+                        <option value="Steel Welding">Steel Welding</option>
+                        <option value="Pipe Welding">Pipe Welding</option>
                       </select>
                       <label htmlFor="service">Choose A Service</label>
                     </div>
