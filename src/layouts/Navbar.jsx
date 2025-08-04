@@ -120,9 +120,9 @@ function Navbar() {
                     <div className="dropdown-menu bg-light rounded-0 rounded-bottom m-0">
                       <NavLink to="/features" className="dropdown-item text-uppercase">Features</NavLink>
                       <NavLink to="/team" className="dropdown-item text-uppercase">Our Team</NavLink>
-                      <NavLink to="/testimonials" className="dropdown-item text-uppercase">Testimonial</NavLink>
+                      {/* <NavLink to="/testimonials" className="dropdown-item text-uppercase">Testimonial</NavLink> */}
                       <NavLink to="/appointment" className="dropdown-item text-uppercase">Appointment</NavLink>
-                      <NavLink to="/NotFound" className="dropdown-item text-uppercase">404 Page</NavLink>
+                      {/* <NavLink to="/NotFound" className="dropdown-item text-uppercase">404 Page</NavLink> */}
                     </div>
                   </div>
 
