@@ -43,7 +43,7 @@ export default function JobList() {
           throw new Error('No authentication token found');
         }
 
-        const response = await fetch('http://127.0.0.1:8000/api/rest/v2/jobs/', {
+        const response = await fetch('https://welding-backend-vm1n.onrender.com/api/rest/v2/jobs/', {
           headers: {
             'Authorization': `Token ${token}`,
             'Content-Type': 'application/json',

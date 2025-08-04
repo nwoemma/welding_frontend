@@ -57,7 +57,7 @@ function Register() {
     }
 
     try {
-      const res = await axios.post('http://127.0.0.1:8000/api/rest/v2/sign_up/', {
+      const res = await axios.post('https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/', {
         full_name: formData.full_name,
         email: formData.email,
         password: formData.password,

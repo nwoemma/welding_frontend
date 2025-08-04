@@ -74,7 +74,7 @@ const JobCreate = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/rest/v2/job_create/', 
+        'https://welding-backend-vm1n.onrender.com/api/rest/v2/job_create/', 
         formData,
         {
           headers: {

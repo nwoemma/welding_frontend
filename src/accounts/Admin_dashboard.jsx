@@ -42,7 +42,7 @@ ChartJS.register(
   Legend
 );
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api/rest/v2/dashboard/';
+const API_BASE_URL = 'https://welding-backend-vm1n.onrender.com/api/rest/v2/dashboard/';
 
 // Styled components - EXACTLY AS YOU HAD THEM
 const DashboardContainer = styled.div`

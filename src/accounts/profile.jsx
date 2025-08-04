@@ -44,7 +44,7 @@ const Profile = () => {
         setIsLoading(true);
         setError(null);
         
-        const response = await axios.get('http://127.0.0.1:8000/api/rest/v2/profile/', {
+        const response = await axios.get('https://welding-backend-vm1n.onrender.com/api/rest/v2/profile/', {
           headers: { Authorization: `Token ${token}` }
         });
         
