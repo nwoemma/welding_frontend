@@ -56,6 +56,9 @@ function Register() {
       setIsLoading(false);
       return;
     }
+    console.log("[DEBUG] Form data:", formData);
+      console.log("[DEBUG] Attempting to connect to:", 
+    'https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/');
 
     try {
       const res = await axios.post('https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/', {
@@ -66,9 +69,7 @@ function Register() {
         address: formData.address,
         role: formData.role
       });
-      console.log("[DEBUG] Form data:", formData);
-  console.log("[DEBUG] Attempting to connect to:", 
-    'https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/');
+      
 
 
       console.log(res.data);
