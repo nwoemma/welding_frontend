@@ -28,60 +28,88 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("[DEBUG] Form submitted");
+    console.log("[DEBUG] Form submitted with data:", JSON.stringify(formData, null, 2));
     setIsLoading(true);
     setError('');
 
-    // Validation
-    if (!formData.termsAgreed) {
-      setError('You must agree to the terms and conditions');
-      setIsLoading(false);
-      return;
-    }
+    // Enhanced validation
+    const validations = [
+      [!formData.termsAgreed, 'You must agree to the terms and conditions'],
+      [formData.password !== formData.confirmPassword, 'Passwords do not match'],
+      [formData.password.length < 8, 'Password must be at least 8 characters'],
+      [!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email), 'Please enter a valid email address'],
+      [!formData.phone.match(/^\+?\d{10,15}$/), 'Please enter a valid phone number'],
+      [formData.full_name.length < 2, 'Full name must be at least 2 characters'],
+      [formData.address.length < 5, 'Address must be more specific']
+    ];
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
-      return;
+    for (const [condition, message] of validations) {
+      if (condition) {
+        setError(message);
+        setIsLoading(false);
+        return;
+      }
     }
-
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters');
-      setIsLoading(false);
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setError('Please enter a valid email address');
-      setIsLoading(false);
-      return;
-    }
-    console.log("[DEBUG] Form data:", formData);
-      console.log("[DEBUG] Attempting to connect to:", 
-    'https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/');
 
     try {
-      const res = await axios.post('https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/', {
-        full_name: formData.full_name,
-        email: formData.email,
-        password: formData.password,
-        phone: formData.phone,
-        address: formData.address,
-        role: formData.role
-      });
+      console.log("[NETWORK] Sending request to backend...");
+      const response = await axios.post(
+        'https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/',
+        {
+          user: {  // Modified to match common Django REST API patterns
+            full_name: formData.full_name,
+            email: formData.email,
+            password: formData.password,
+            phone: formData.phone,
+            address: formData.address,
+            role: formData.role
+          }
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          timeout: 10000  // 10 second timeout
+        }
+      );
+
+      console.log("[SUCCESS] Registration response:", response.data);
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+      }
+      navigate(formData.role === 'admin' ? '/admin/dashboard' : '/dashboard');
       
-
-
-      console.log(res.data);
-      navigate(formData.role === 'admin' ? '/admin' : '/login');
     } catch (err) {
-      const message = err.response?.data?.error || 'Registration failed';
-      setError(message);
+      console.error("[ERROR] Registration failed:", {
+        error: err,
+        response: err.response,
+        request: err.request
+      });
+
+      let errorMessage = 'Registration failed. Please try again.';
+      if (err.response) {
+        // Handle different backend error formats
+        if (err.response.data?.errors) {
+          errorMessage = Object.values(err.response.data.errors).flat().join(', ');
+        } else if (err.response.data?.detail) {
+          errorMessage = err.response.data.detail;
+        } else if (err.response.data?.non_field_errors) {
+          errorMessage = err.response.data.non_field_errors.join(', ');
+        } else if (err.response.data) {
+          errorMessage = JSON.stringify(err.response.data);
+        }
+      } else if (err.code === 'ECONNABORTED') {
+        errorMessage = 'Request timeout. Please check your connection.';
+      } else if (err.request) {
+        errorMessage = 'No response from server. Check your network.';
+      }
+
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="d-flex align-items-center min-vh-100 bg-light">
       <div className="container py-5">
