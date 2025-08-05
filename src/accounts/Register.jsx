@@ -28,6 +28,7 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("[DEBUG] Form submitted");
     setIsLoading(true);
     setError('');
 
@@ -57,7 +58,7 @@ function Register() {
     }
 
     try {
-      const res = await axios.post('https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up', {
+      const res = await axios.post('https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/', {
         full_name: formData.full_name,
         email: formData.email,
         password: formData.password,
@@ -65,6 +66,10 @@ function Register() {
         address: formData.address,
         role: formData.role
       });
+      console.log("[DEBUG] Form data:", formData);
+  console.log("[DEBUG] Attempting to connect to:", 
+    'https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/');
+
 
       console.log(res.data);
       navigate(formData.role === 'admin' ? '/admin' : '/login');
