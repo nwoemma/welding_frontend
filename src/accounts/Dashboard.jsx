@@ -4,8 +4,7 @@ import axios from 'axios';
 import { 
   FaFire, FaChartLine, FaClipboardList, FaCalendarAlt,
   FaWarehouse, FaPlus, FaSearch, FaUser, FaBell, FaCog,
-  FaTools, FaFileInvoiceDollar, FaUsersCog, FaDollarSign,
-  FaBars, FaTimes
+  FaTools, FaFileInvoiceDollar, FaUsersCog, FaDollarSign
 } from 'react-icons/fa';
 import { Bar, Pie, Line } from 'react-chartjs-2';
 import {
@@ -57,77 +56,56 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const navigate = useNavigate();
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  const toggleMobileSidebar = () => {
-    setMobileSidebarOpen(!mobileSidebarOpen);
-  };
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 992) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Call once to set initial state
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem('token');
-        if (!token) throw new Error('Authentication token missing');
+  try {
+    setLoading(true);
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Authentication token missing');
 
-        const response = await axios.get(API_BASE_URL, {
-          headers: { Authorization: `Token ${token}` },
-        });
-        
-        const transformedData = {
-          stats: [
-            { label: 'Jobs', value: response.data.job_count || 0 },
-            { label: 'Materials', value: response.data.material_count || 0 },
-            { label: 'Tasks', value: response.data.task_count || 0 },
-            { label: 'Notifications', value: response.data.notification_count || 0 }
-          ],
-          notifications: Array.isArray(response.data.notifications) ? response.data.notifications : [],
-          recent_users: Array.isArray(response.data.recent_users) ? response.data.recent_users : [],
-          recent_jobs: Array.isArray(response.data.recent_jobs) ? response.data.recent_jobs.slice(0, 5) : [],
-          upcoming_tasks: Array.isArray(response.data.upcoming_tasks) ? response.data.upcoming_tasks : [],
-          unread_notifications: response.data.unread_notifications || 0,
-          activity_chart: response.data.activity_chart || null,
-          project_timeline: response.data.project_timeline || null,
-          productivity_chart: response.data.productivity_chart || null
-        };
+    const response = await axios.get(API_BASE_URL, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    
+    console.log('API Response:', response.data); // Debugging
 
-        setUserData({
-          first_name: response.data.user?.first_name || '',
-          last_name: response.data.user?.last_name || '',
-          role: response.data.user?.role || 'welder'
-        });
-        
-        setDashboardData(transformedData);
-      } catch (err) {
-        console.error('Dashboard error:', err);
-        setError(err.response?.data?.error || err.message || 'Failed to load dashboard');
-        if (err.response?.status === 401) {
-          navigate('/login');
-        }
-      } finally {
-        setLoading(false);
-      }
+    // Safely transform the API response
+    const transformedData = {
+      stats: [
+        { label: 'Jobs', value: response.data.job_count || 0 },
+        { label: 'Materials', value: response.data.material_count || 0 },
+        { label: 'Tasks', value: response.data.task_count || 0 },
+        { label: 'Notifications', value: response.data.notification_count || 0 }
+      ],
+      notifications: Array.isArray(response.data.notifications) ? response.data.notifications : [],
+      recent_users: Array.isArray(response.data.recent_users) ? response.data.recent_users : [],
+      recent_jobs: Array.isArray(response.data.recent_jobs) ? response.data.recent_jobs.slice(0, 5) : [],
+      upcoming_tasks: Array.isArray(response.data.upcoming_tasks) ? response.data.upcoming_tasks : [],
+      unread_notifications: response.data.unread_notifications || 0,
+      activity_chart: response.data.activity_chart || null,
+      project_timeline: response.data.project_timeline || null,
+      productivity_chart: response.data.productivity_chart || null
     };
+
+    setUserData({
+      first_name: response.data.user?.first_name || '',
+      last_name: response.data.user?.last_name || '',
+      role: response.data.user?.role || 'welder'
+    });
+    
+    setDashboardData(transformedData);
+  } catch (err) {
+    console.error('Dashboard error:', err);
+    setError(err.response?.data?.error || err.message || 'Failed to load dashboard');
+    if (err.response?.status === 401) {
+      navigate('/login');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchData();
   }, [navigate]);
@@ -149,7 +127,7 @@ function Dashboard() {
     client: {
       tabs: [
         { id: 'overview', label: 'My Projects', icon: FaChartLine },
-        { id: 'jobs', label: 'My Jobs', icon: FaClipboardList },
+        { id: 'jobs', label: 'My Jobs', icon: FaClipboardList },                                                                                                                                                       
         { id: 'requests', label: 'New Request', icon: FaPlus },
         { id: 'invoices', label: 'Invoices', icon: FaDollarSign }
       ],
@@ -175,41 +153,41 @@ function Dashboard() {
   };
 
   const renderChart = (chartData) => {
-    if (!chartData || !chartData.data || !chartData.data.datasets) {
+  if (!chartData || !chartData.data || !chartData.data.datasets) {
+    return (
+      <div className="text-muted p-4">
+        <FaChartLine className="fs-1 mb-2" />
+        <p>No chart data available</p>
+      </div>
+    );
+  }
+
+  const commonOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+    },
+  };
+
+  switch (chartData.type) {
+    case 'bar':
+      return <Bar data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
+    case 'line':
+      return <Line data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
+    case 'pie':
+      return <Pie data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
+    default:
       return (
         <div className="text-muted p-4">
-          <FaChartLine className="fs-1 mb-2" />
-          <p>No chart data available</p>
+          <FaExclamationTriangle className="fs-1 mb-2" />
+          <p>Unsupported chart type</p>
         </div>
       );
-    }
-
-    const commonOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-      },
-    };
-
-    switch (chartData.type) {
-      case 'bar':
-        return <Bar data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
-      case 'line':
-        return <Line data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
-      case 'pie':
-        return <Pie data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
-      default:
-        return (
-          <div className="text-muted p-4">
-            <FaChartLine className="fs-1 mb-2" />
-            <p>Unsupported chart type</p>
-          </div>
-        );
-    }
-  };
+  }
+};
 
   if (loading) {
     return (
@@ -238,18 +216,10 @@ function Dashboard() {
   const currentConfig = roleConfig[userData.role] || roleConfig.welder;
 
   return (
-    <div className="dashboard-container">
+    <div className="container-fluid p-0 vh-100 d-flex flex-column bg-light">
       {/* Top Navigation Bar */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
-          <button 
-            className="navbar-toggler me-2 border-0" 
-            type="button"
-            onClick={toggleMobileSidebar}
-            aria-label="Toggle sidebar"
-          >
-            {mobileSidebarOpen ? <FaTimes /> : <FaBars />}
-          </button>
           <Link className="navbar-brand fw-bold" to="/">
             <FaFire className="text-warning me-2" />
             WeldTrack Pro
@@ -329,23 +299,17 @@ function Dashboard() {
       </nav>
 
       {/* Main Content */}
-      <div className="dashboard-main-content">
-        {/* Sidebar - Desktop */}
-        <div 
-          className={`dashboard-sidebar ${sidebarOpen ? 'open' : 'closed'}`}
-        >
+      <div className="container-fluid p-0 flex-grow-1 d-flex">
+        {/* Sidebar */}
+        <div className="d-flex flex-column flex-shrink-0 p-3 bg-white shadow-sm" style={{width: '280px'}}>
           <ul className="nav nav-pills flex-column mb-auto">
             {currentConfig.tabs.map(tab => (
               <li className="nav-item" key={tab.id}>
                 <button 
                   className={`nav-link d-flex align-items-center ${activeTab === tab.id ? 'active' : ''}`}
-                  onClick={() => {
-                    setActiveTab(tab.id);
-                    if (window.innerWidth < 992) setMobileSidebarOpen(false);
-                  }}
+                  onClick={() => setActiveTab(tab.id)}
                 >
-                  <tab.icon className="me-2" /> 
-                  <span className="sidebar-item-label">{tab.label}</span>
+                  <tab.icon className="me-2" /> {tab.label}
                 </button>
               </li>
             ))}
@@ -358,66 +322,15 @@ function Dashboard() {
                 key={action.label}
                 to={action.path} 
                 className="btn btn-outline-primary w-100 d-flex align-items-center justify-content-start mb-2"
-                onClick={() => window.innerWidth < 992 && setMobileSidebarOpen(false)}
               >
-                <action.icon className="me-2" /> 
-                <span className="sidebar-item-label">{action.label}</span>
+                <action.icon className="me-2" /> {action.label}
               </Link>
             ))}
           </div>
         </div>
 
-        {/* Sidebar - Mobile Overlay */}
-        {mobileSidebarOpen && (
-          <div className="dashboard-mobile-sidebar-overlay" onClick={toggleMobileSidebar}>
-            <div 
-              className="dashboard-mobile-sidebar-content"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="d-flex justify-content-end mb-3">
-                <button className="btn btn-sm btn-outline-secondary" onClick={toggleMobileSidebar}>
-                  <FaTimes />
-                </button>
-              </div>
-              <ul className="nav nav-pills flex-column mb-auto">
-                {currentConfig.tabs.map(tab => (
-                  <li className="nav-item" key={tab.id}>
-                    <button 
-                      className={`nav-link d-flex align-items-center ${activeTab === tab.id ? 'active' : ''}`}
-                      onClick={() => {
-                        setActiveTab(tab.id);
-                        setMobileSidebarOpen(false);
-                      }}
-                    >
-                      <tab.icon className="me-2" /> 
-                      <span>{tab.label}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <hr />
-              <div className="mb-3">
-                <h6 className="text-muted small">QUICK ACTIONS</h6>
-                {currentConfig.quickActions.map(action => (
-                  <Link 
-                    key={action.label}
-                    to={action.path} 
-                    className="btn btn-outline-primary w-100 d-flex align-items-center justify-content-start mb-2"
-                    onClick={() => setMobileSidebarOpen(false)}
-                  >
-                    <action.icon className="me-2" /> 
-                    <span>{action.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Content Area */}
-        <div 
-          className={`dashboard-content ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}
-        >
+        <div className="container-fluid p-4 overflow-auto">
           {activeTab === 'overview' && (
             <div className="row g-4">
               {/* Welcome Card */}
@@ -606,100 +519,6 @@ function Dashboard() {
           )}
         </div>
       </div>
-
-      {/* CSS for the dashboard */}
-      <style jsx>{`
-        .dashboard-container {
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-          width: 100%;
-        }
-        
-        .dashboard-main-content {
-          display: flex;
-          flex: 1;
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .dashboard-sidebar {
-          width: 280px;
-          background: white;
-          box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-          transition: transform 0.3s ease, width 0.3s ease;
-          z-index: 1000;
-          height: calc(100vh - 56px);
-          overflow-y: auto;
-          position: sticky;
-          top: 56px;
-        }
-        
-        .dashboard-sidebar.closed {
-          transform: translateX(-280px);
-          width: 0;
-        }
-        
-        .dashboard-content {
-          flex: 1;
-          padding: 1rem;
-          overflow-y: auto;
-          height: calc(100vh - 56px);
-          transition: margin-left 0.3s ease;
-        }
-        
-        .dashboard-content.sidebar-open {
-          margin-left: 0;
-        }
-        
-        .dashboard-content.sidebar-closed {
-          margin-left: 0;
-        }
-        
-        .dashboard-mobile-sidebar-overlay {
-          position: fixed;
-          top: 56px;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          z-index: 1050;
-          display: flex;
-        }
-        
-        .dashboard-mobile-sidebar-content {
-          width: 280px;
-          background: white;
-          padding: 1rem;
-          overflow-y: auto;
-        }
-        
-        @media (min-width: 992px) {
-          .dashboard-content.sidebar-open {
-            margin-left: 280px;
-          }
-          
-          .dashboard-sidebar.closed {
-            transform: translateX(0);
-            width: 60px;
-            overflow: hidden;
-          }
-          
-          .dashboard-sidebar.closed .sidebar-item-label {
-            display: none;
-          }
-          
-          .dashboard-sidebar.closed .nav-link,
-          .dashboard-sidebar.closed .btn {
-            justify-content: center;
-          }
-          
-          .dashboard-sidebar.closed .nav-link .me-2,
-          .dashboard-sidebar.closed .btn .me-2 {
-            margin-right: 0;
-          }
-        }
-      `}</style>
     </div>
   );
 }
