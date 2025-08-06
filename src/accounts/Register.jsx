@@ -74,7 +74,7 @@ function Register() {
     if (response.data.token) {
       localStorage.setItem('authToken', response.data.token);
     }
-    navigate(formData.role === 'admin' ? '/admin/dashboard' : '/dashboard');
+    navigate('/login');
     
   } catch (err) {
     console.error("[ERROR] Registration failed:", {
