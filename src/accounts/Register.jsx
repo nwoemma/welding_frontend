@@ -55,14 +55,16 @@ function Register() {
       console.log("[NETWORK] Sending request to backend...");
       const response = await axios.post(
         'https://welding-backend-vm1n.onrender.com/api/rest/v2/sign_up/',
-        { 
+        {
+          user: {  // Modified to match common Django REST API patterns
             full_name: formData.full_name,
             email: formData.email,
             password: formData.password,
             phone: formData.phone,
             address: formData.address,
             role: formData.role
-          },
+          }
+        },
         {
           headers: {
             'Content-Type': 'application/json',
