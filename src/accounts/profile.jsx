@@ -84,6 +84,48 @@ const Profile = () => {
     }
   };
 
+  // Add the missing handleImageUpload function
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileData(prev => ({
+          ...prev,
+          profilePicPreview: reader.result,
+          profileImage: file
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Add the missing handleInputChange function
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.');
+      setProfileData(prev => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: type === 'checkbox' ? checked : value
+        }
+      }));
+    } else {
+      setProfileData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
+  };
+
+  // Add the missing handleTabChange function
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
