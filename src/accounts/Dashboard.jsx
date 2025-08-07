@@ -21,6 +21,7 @@ import {
   Legend
 } from 'chart.js';
 import { Dropdown } from 'react-bootstrap';
+import useDeviceDetect from '../hooks/useDeviceDetect';
 
 // Register ChartJS components
 ChartJS.register(
@@ -38,6 +39,7 @@ ChartJS.register(
 const API_BASE_URL = 'https://welding-backend-vm1n.onrender.com/api/rest/v2/dashboard/';
 
 function Dashboard() {
+  const { isAndroid } = useDeviceDetect();
   const [userData, setUserData] = useState({
     first_name: '',
     last_name: '',
@@ -126,7 +128,7 @@ function Dashboard() {
     client: {
       tabs: [
         { id: 'overview', label: 'My Projects', icon: FaChartLine },
-        { id: 'jobs', label: 'My Jobs', icon: FaClipboardList },                                                                                                                                                       
+        { id: 'jobs', label: 'My Jobs', icon: FaClipboardList },
         { id: 'requests', label: 'New Request', icon: FaPlus },
         { id: 'invoices', label: 'Invoices', icon: FaDollarSign }
       ],
@@ -222,7 +224,7 @@ function Dashboard() {
 
   return (
     <div className="container-fluid p-0 vh-100 d-flex flex-column bg-light">
-      {/* Top Navigation Bar - Mobile Optimized */}
+      {/* Top Navigation Bar with Android Dropdown Fixes */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-2 py-1">
         <div className="container-fluid">
           <div className="d-flex align-items-center w-100">
@@ -240,8 +242,9 @@ function Dashboard() {
               <span className="d-inline d-sm-none">WTP</span>
             </Link>
 
-            <div className="d-flex ms-auto">
-              <Dropdown className="me-2">
+            <div className="d-flex ms-auto position-relative">
+              {/* Notification Dropdown with Android Fix */}
+              <Dropdown className={`me-2 ${isAndroid ? 'android-dropdown' : ''}`}>
                 <Dropdown.Toggle variant="dark" className="position-relative p-1">
                   <FaBell size={18} />
                   {dashboardData.unread_notifications > 0 && (
@@ -250,7 +253,20 @@ function Dashboard() {
                     </span>
                   )}
                 </Dropdown.Toggle>
-                <Dropdown.Menu align="end" className="dropdown-menu-end" style={{ zIndex: 1050 }}>
+                <Dropdown.Menu 
+                  align="end" 
+                  className={`dropdown-menu-end ${isAndroid ? 'android-dropdown-menu' : 'position-absolute'}`}
+                  style={{
+                    zIndex: 1050,
+                    ...(isAndroid && {
+                      position: 'fixed',
+                      marginTop: '5px',
+                      right: '15px',
+                      left: 'auto',
+                      width: '280px'
+                    })
+                  }}
+                >
                   <Dropdown.Header>Notifications</Dropdown.Header>
                   {dashboardData.notifications.length > 0 ? (
                     dashboardData.notifications.map(notification => (
@@ -274,13 +290,26 @@ function Dashboard() {
                 </Dropdown.Menu>
               </Dropdown>
 
-              <Dropdown>
+              {/* Profile Dropdown with Android Fix */}
+              <Dropdown className={isAndroid ? 'android-dropdown' : ''}>
                 <Dropdown.Toggle variant="dark" className="p-1">
                   <div className="bg-primary rounded-circle p-1">
                     <FaUser className="text-white" size={16} />
                   </div>
                 </Dropdown.Toggle>
-                <Dropdown.Menu align="end" className="dropdown-menu-end" style={{ zIndex: 1050 }}>
+                <Dropdown.Menu
+                  align="end"
+                  className={`dropdown-menu-end ${isAndroid ? 'android-dropdown-menu' : 'position-absolute'}`}
+                  style={{
+                    zIndex: 1050,
+                    ...(isAndroid && {
+                      position: 'fixed',
+                      marginTop: '5px',
+                      right: '15px',
+                      left: 'auto'
+                    })
+                  }}
+                >
                   <Dropdown.Item as={Link} to="/profile" className="p-2">
                     <FaUser className="me-2" /> Profile
                   </Dropdown.Item>
@@ -351,7 +380,7 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Content Area - Mobile Optimized */}
+        {/* Content Area */}
         <div className="container-fluid p-2 overflow-auto">
           {activeTab === 'overview' && (
             <>
