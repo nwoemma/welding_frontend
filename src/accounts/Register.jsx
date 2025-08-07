@@ -253,7 +253,7 @@ function Register() {
                           required
                         >
                           <option value="client">Client</option>
-                          <option value="vendor">Vendor</option>
+                          <option value="welder">Vendor</option>
                         </select>
                         <label htmlFor="role" className="text-muted">
                           <FaUserTag className="me-2" />
