@@ -2,58 +2,87 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-// Create configured axios instance with interceptors
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'https://welding-backend-vm1n.onrender.com',
-});
+// Create configured axios instance
+const createApiInstance = (navigate) => {
+  const api = axios.create({
+    baseURL: process.env.REACT_APP_API_BASE_URL || 'https://welding-backend-vm1n.onrender.com',
+  });
 
-// Add request interceptor to include token in headers
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Token ${token}`;
-  }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
-
-// Add response interceptor to handle 401/403 errors
-api.interceptors.response.use(
-  response => response,
-  async (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      // Log the auth error before redirecting
-      await logErrorToBackend({
-        message: 'Authentication error',
-        status: error.response?.status,
-        data: error.response?.data
-      });
-      localStorage.removeItem('token');
-      window.location.href = '/login'; // Full reload to clear state
+  // Request interceptor
+  api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Token ${token}`;
     }
+    return config;
+  }, (error) => {
     return Promise.reject(error);
-  }
-);
-const navigate = useNavigate();
-// Error logging function
-const logErrorToBackend = async (errorData) => {
-  try {
-    await api.post('/api/log-error/', {
-      component: 'Profile',
-      error: errorData.message || 'Unknown error',
-      status: errorData.status,
-      data: errorData.data,
-      stack: errorData.stack,
-      timestamp: new Date().toISOString()
-    });
-  } catch (loggingError) {
-    console.error('Failed to log error to backend:', loggingError);
-  }
+  });
+
+  // Response interceptor
+  api.interceptors.response.use(
+    response => response,
+    async (error) => {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  return api;
 };
 
 const Profile = () => {
-  // ... [previous state declarations remain the same] ...
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const api = createApiInstance(navigate);
+  
+  const [profileData, setProfileData] = useState({
+    first_name: '',
+    last_name: '',
+    education: '',
+    skills: '',
+    job: '',
+    company: '',
+    phone: '',
+    email: '',
+    address: '',
+    country: 'United States',
+    about: '',
+    profile_pic: null,
+    profilePicPreview: null,
+    social: {
+      youtube: '',
+      twitter: '',
+      facebook: '',
+      linkedin: ''
+    },
+    notifications: {
+      emailChange: false,
+      passwordChange: false,
+      weeklyNewsletter: false,
+      productPromotions: false
+    }
+  });
+
+  const logErrorToBackend = async (errorData) => {
+    try {
+      await api.post('/api/log-error/', {
+        component: 'Profile',
+        error: errorData.message || 'Unknown error',
+        status: errorData.status,
+        data: errorData.data,
+        stack: errorData.stack,
+        timestamp: new Date().toISOString()
+      });
+    } catch (loggingError) {
+      console.error('Failed to log error to backend:', loggingError);
+    }
+  };
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -83,7 +112,6 @@ const Profile = () => {
       } catch (err) {
         console.error('Profile fetch error:', err);
         
-        // Log error to backend
         await logErrorToBackend({
           message: err.message,
           status: err.response?.status,
@@ -104,8 +132,8 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [navigate]);
-
+  }, [navigate, api]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
