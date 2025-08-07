@@ -63,7 +63,7 @@ function AppRouter() {
 
           <Route path="job_update/:id" element={<JobUpdate />} />
           <Route path="job_list" element={<JobList />} />
-          <Route path="job_apply" element={<JobApplication />} />
+          <Route path="jobs/request" element={<JobApplication />} />
           <Route path='job_create' element= {<JobCreationForm/>}/>
           {/* <Route path='admin' element= {<AdminRoute/>}/> */}
           {/* <Route path="chats" element={<Chats />} /> */}
