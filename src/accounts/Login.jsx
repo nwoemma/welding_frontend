@@ -43,6 +43,7 @@ function Login() {
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('isAuthenticated', 'true');
+        console.log('Token stored:', localStorage.getItem('token'));
         navigate('/profile');
       } else {
         setError('Login failed: No token received.');

@@ -2,6 +2,34 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+// Create configured axios instance with interceptors
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'https://welding-backend-vm1n.onrender.com',
+});
+
+// Add request interceptor to include token in headers
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Token ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+// Add response interceptor to handle 401/403 errors
+api.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      localStorage.removeItem('token');
+      window.location.href = '/login'; // Full reload to clear state
+    }
+    return Promise.reject(error);
+  }
+);
+
 const Profile = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isLoading, setIsLoading] = useState(true);
@@ -36,8 +64,6 @@ const Profile = () => {
     }
   });
 
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://welding-backend-vm1n.onrender.com';
-
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -45,42 +71,39 @@ const Profile = () => {
         setError(null);
         
         const token = localStorage.getItem('token');
+        console.log('Current token:', token);
+        
         if (!token) {
-          console.error('No token found')
           throw new Error('Authentication token not found');
-          
         }
-        console.log('Making request to:', `${API_BASE_URL}/api/rest/v2/profile/`);
-        const response = await axios.get(`${API_BASE_URL}/api/rest/v2/profile/`, {
-          headers: { 
-            'Authorization': `Token ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+
+        console.log('Fetching profile data...');
+        const response = await api.get('/api/rest/v2/profile/');
         
         setProfileData(prev => ({
           ...prev,
           ...response.data,
-          social: {
-            ...prev.social,
-            ...(response.data.social || {})
-          },
-          notifications: {
-            ...prev.notifications,
-            ...(response.data.notifications || {})
-          }
+          social: response.data.social || prev.social,
+          notifications: response.data.notifications || prev.notifications,
+          profilePicPreview: response.data.profile_pic 
+            ? `${api.defaults.baseURL}${response.data.profile_pic}`
+            : prev.profilePicPreview
         }));
+        
       } catch (err) {
         console.error('Profile fetch error:', err);
-      console.log('Response data:', err.response?.data);
-      console.log('Status code:', err.response?.status)
+        console.log('Error details:', {
+          status: err.response?.status,
+          data: err.response?.data,
+          headers: err.response?.headers
+        });
         
         if (err.response?.status === 403) {
           setError('Session expired. Please log in again.');
           localStorage.removeItem('token');
           navigate('/login');
         } else {
-          setError(err.response?.data?.detail || 'Failed to load profile data');
+          setError(err.message || 'Failed to load profile data');
         }
       } finally {
         setIsLoading(false);
@@ -88,7 +111,7 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [navigate, API_BASE_URL]);
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -151,29 +174,34 @@ const Profile = () => {
         formData.append(key, JSON.stringify(value));
       } else if (key === 'notifications') {
         formData.append(key, JSON.stringify(value));
-      } else if (key !== 'profilePicPreview') {
+      } else if (!['profilePicPreview', 'profile_pic'].includes(key)) {
         formData.append(key, value);
       }
     });
 
     try {
-      const response = await axios.put(`${API_BASE_URL}/api/rest/v2/profile/`, formData, {
+      console.log('Updating profile...');
+      const response = await api.put('/api/rest/v2/profile/', formData, {
         headers: {
-          'Authorization': `Token ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
       
-      // Update with the returned data
       setProfileData(prev => ({
         ...prev,
         ...response.data,
-        profilePicPreview: response.data.profile_pic || prev.profilePicPreview
+        profilePicPreview: response.data.profile_pic 
+          ? `${api.defaults.baseURL}${response.data.profile_pic}`
+          : prev.profilePicPreview
       }));
       
       alert('Profile updated successfully!');
     } catch (err) {
       console.error('Error updating profile:', err);
+      console.log('Update error details:', {
+        status: err.response?.status,
+        data: err.response?.data
+      });
       
       if (err.response?.status === 403) {
         setError('Session expired. Please log in again.');
@@ -247,7 +275,7 @@ const Profile = () => {
                         />
                       ) : profileData.profile_pic ? (
                         <img 
-                          src={profileData.profile_pic} 
+                          src={`${api.defaults.baseURL}${profileData.profile_pic}`}
                           className="img-fluid rounded-circle" 
                           alt="Profile" 
                           style={{width: '150px', height: '150px', objectFit: 'cover'}}
@@ -277,11 +305,30 @@ const Profile = () => {
               <div className="col-12">
                 <div className="card widget-card border-light shadow-sm">
                   <div className="card-header text-bg-primary">Social Accounts</div>
+                  <div className="card-body">
+                    {Object.entries(profileData.social).map(([platform, url]) => (
+                      url && (
+                        <div key={platform} className="mb-2">
+                          <strong>{platform.charAt(0).toUpperCase() + platform.slice(1)}:</strong>
+                          <div className="text-truncate">
+                            <a href={url} target="_blank" rel="noopener noreferrer">
+                              {url}
+                            </a>
+                          </div>
+                        </div>
+                      )
+                    ))}
+                  </div>
                 </div>
               </div>
               <div className="col-12">
                 <div className="card widget-card border-light shadow-sm">
                   <div className="card-header text-bg-primary">About Me</div>
+                  <div className="card-body">
+                    <p className="card-text">
+                      {profileData.about || 'No information provided yet.'}
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="col-12">
@@ -397,8 +444,8 @@ const Profile = () => {
                             </div>
                           </div>
                           {[
-                            ['firstName', 'First Name', 'text', profileData.first_name, true],
-                            ['lastName', 'Last Name', 'text', profileData.last_name, true],
+                            ['first_name', 'First Name', 'text', profileData.first_name, true],
+                            ['last_name', 'Last Name', 'text', profileData.last_name, true],
                             ['education', 'Education/Certifications', 'text', profileData.education],
                             ['skills', 'Skills (comma separated)', 'text', profileData.skills, false, "MIG, TIG, Stick, Plasma Cutting"],
                             ['job', 'Job Title', 'text', profileData.job],
@@ -467,7 +514,12 @@ const Profile = () => {
                           </div>
                           <div className="col-12">
                             <button type="submit" className="btn btn-primary" disabled={isLoading}>
-                              {isLoading ? 'Saving...' : 'Save Profile'}
+                              {isLoading ? (
+                                <>
+                                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                  Saving...
+                                </>
+                              ) : 'Save Profile'}
                             </button>
                           </div>
                         </div>
@@ -506,7 +558,12 @@ const Profile = () => {
                         <div className="row">
                           <div className="col-12">
                             <button type="submit" className="btn btn-primary mt-4" disabled={isLoading}>
-                              {isLoading ? 'Saving...' : 'Save Preferences'}
+                              {isLoading ? (
+                                <>
+                                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                  Saving...
+                                </>
+                              ) : 'Save Preferences'}
                             </button>
                           </div>
                         </div>
