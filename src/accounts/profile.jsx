@@ -35,7 +35,7 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+const navigate = useNavigate();
 // Error logging function
 const logErrorToBackend = async (errorData) => {
   try {
