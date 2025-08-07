@@ -250,7 +250,7 @@ function Dashboard() {
                     </span>
                   )}
                 </Dropdown.Toggle>
-                <Dropdown.Menu align="end" className="dropdown-menu-end">
+                <Dropdown.Menu align="end" className="dropdown-menu-end" style={{ zIndex: 1050 }}>
                   <Dropdown.Header>Notifications</Dropdown.Header>
                   {dashboardData.notifications.length > 0 ? (
                     dashboardData.notifications.map(notification => (
@@ -280,7 +280,7 @@ function Dashboard() {
                     <FaUser className="text-white" size={16} />
                   </div>
                 </Dropdown.Toggle>
-                <Dropdown.Menu align="end" className="dropdown-menu-end">
+                <Dropdown.Menu align="end" className="dropdown-menu-end" style={{ zIndex: 1050 }}>
                   <Dropdown.Item as={Link} to="/profile" className="p-2">
                     <FaUser className="me-2" /> Profile
                   </Dropdown.Item>
