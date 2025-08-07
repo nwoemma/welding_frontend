@@ -43,7 +43,7 @@ function Login() {
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('isAuthenticated', 'true');
-        navigate('/dashboard');
+        navigate('/profile');
       } else {
         setError('Login failed: No token received.');
       }

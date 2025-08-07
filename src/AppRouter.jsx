@@ -21,7 +21,6 @@ import AdminSignIn from './accounts/admin_sign'; // Import AdminSignIn component
 import AdminDashboard from './accounts/Admin_dashboard';
 import WeldingChat from './chats/chats';
 import Profile from './accounts/profile';
-import JobApplication from './jobs/jobs_apply'; // Import JobList component
 import JobUpdate from './jobs/job_update';
 import JobList from './jobs/job_list';
 import JobCreationForm from './jobs/job_creation'
@@ -63,7 +62,6 @@ function AppRouter() {
 
           <Route path="job_update/:id" element={<JobUpdate />} />
           <Route path="job_list" element={<JobList />} />
-          <Route path="jobs/request" element={<JobApplication />} />
           <Route path='job_create' element= {<JobCreationForm/>}/>
           {/* <Route path='admin' element= {<AdminRoute/>}/> */}
           {/* <Route path="chats" element={<Chats />} /> */}
