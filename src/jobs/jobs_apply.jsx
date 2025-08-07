@@ -8,9 +8,9 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
 const JobApplication = () => {
   const { jobId } = useParams();
-  const navigate = useNavigate()
-  const [userId, setUserId] = useState(null);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isTokenValid, setIsTokenValid] = useState(false);
   const [applicationData, setApplicationData] = useState({
     firstName: '',
     lastName: '',
@@ -22,27 +22,56 @@ const JobApplication = () => {
     experience: '',
     education: '',
     skills: '',
-    source: '',
+    source: 'website',
     consent: false
   });
 
+  // Validate token and permissions on component mount
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUserId = localStorage.getItem('userId');
-    
-    if (!token || !storedUserId) {
-      toast.error('Please login to apply');
-      navigate('/login');
-      return;
-    }
+    const validateTokenAndPermissions = async () => {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      
+      if (!token || !userId) {
+        toast.error('Please login to apply for jobs');
+        navigate('/login');
+        return;
+      }
 
-    if (!jobId) {
-      toast.error('Invalid job listing');
-      navigate('/jobs');
-      return;
-    }
+      try {
+        // Verify token validity
+        await axios.get(
+          'https://welding-backend-vm1n.onrender.com/api/auth/verify_token/',
+          { headers: { 'Authorization': `Token ${token}` } }
+        );
 
-    setUserId(storedUserId);
+        // Verify user role is welder
+        const userResponse = await axios.get(
+          `https://welding-backend-vm1n.onrender.com/api/users/${userId}/`,
+          { headers: { 'Authorization': `Token ${token}` } }
+        );
+
+        if (userResponse.data.role !== 'welder') {
+          toast.error('Only welders can apply for jobs');
+          navigate('/jobs');
+          return;
+        }
+
+        setIsTokenValid(true);
+        
+        if (!jobId) {
+          toast.error('Invalid job listing');
+          navigate('/jobs');
+        }
+      } catch (error) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        toast.error('Session expired. Please login again.');
+        navigate('/login');
+      }
+    };
+
+    validateTokenAndPermissions();
   }, [jobId, navigate]);
 
   const handleChange = (e) => {
@@ -56,13 +85,33 @@ const JobApplication = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!isTokenValid) {
+      toast.error('Please login to apply');
+      return;
+    }
+
     if (!applicationData.consent) {
       toast.error('You must consent to data processing');
       return;
     }
 
-    if (!userId || !jobId) {
-      toast.error('Missing required information');
+    const requiredFields = {
+      firstName: 'First name',
+      lastName: 'Last name',
+      email: 'Email',
+      position: 'Position',
+      resume: 'Resume',
+      experience: 'Experience',
+      education: 'Education',
+      skills: 'Skills'
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([field]) => !applicationData[field])
+      .map(([_, name]) => name);
+
+    if (missingFields.length > 0) {
+      toast.error(`Missing required fields: ${missingFields.join(', ')}`);
       return;
     }
 
@@ -73,9 +122,7 @@ const JobApplication = () => {
     formData.append('last_name', applicationData.lastName);
     formData.append('email', applicationData.email);
     formData.append('phone', applicationData.phone);
-    if (applicationData.resume) {
-      formData.append('resume', applicationData.resume);
-    }
+    formData.append('resume', applicationData.resume);
     formData.append('cover_letter', applicationData.coverLetter);
     formData.append('experience', applicationData.experience);
     formData.append('education', applicationData.education);
@@ -84,6 +131,8 @@ const JobApplication = () => {
 
     try {
       const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+
       const response = await axios.post(
         `https://welding-backend-vm1n.onrender.com/api/apply_for_job/${userId}/${jobId}/`,
         formData,
@@ -95,33 +144,70 @@ const JobApplication = () => {
         }
       );
       
-      toast.success('Application submitted successfully!');
+      toast.success(response.data.message || 'Application submitted successfully!');
+      
+      // Reset form after successful submission
+      setApplicationData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        position: '',
+        resume: null,
+        coverLetter: '',
+        experience: '',
+        education: '',
+        skills: '',
+        source: 'website',
+        consent: false
+      });
+
+      // Redirect to jobs page after 2 seconds
       setTimeout(() => navigate('/jobs'), 2000);
     } catch (error) {
-      console.error('Error submitting application:', error);
+      console.error('Application error:', error);
+      
+      let errorMessage = 'Failed to submit application';
       if (error.response) {
-        if (error.response.status === 400) {
-          toast.error(error.response.data?.error || 'Validation error');
-        } else if (error.response.status === 401) {
-          toast.error('Please login to apply');
-          navigate('/login');
-        } else if (error.response.status === 403) {
-          toast.error('Only welders can apply for jobs');
-        } else if (error.response.status === 404) {
-          toast.error('Job not found');
-        } else {
-          toast.error('Failed to submit application');
+        switch (error.response.status) {
+          case 400:
+            errorMessage = error.response.data?.error || 'Validation error';
+            break;
+          case 401:
+          case 403:
+            errorMessage = error.response.data?.error || 'Authentication failed';
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            navigate('/login');
+            break;
+          case 404:
+            errorMessage = error.response.data?.error || 'Job not found';
+            navigate('/jobs');
+            break;
+          default:
+            errorMessage = error.response.data?.error || 'Application failed';
         }
-      } else {
-        toast.error('Network error. Please try again.');
       }
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
+  if (!isTokenValid) {
+    return (
+      <div className="job-application-container">
+        <div className="loading-spinner">
+          <ArrowPathIcon className="animate-spin" />
+          <p>Verifying your session...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="job-application-container">
+      <ToastContainer position="top-right" autoClose={5000} />
       <h1>Job Application</h1>
       <p>Please fill out the form below to apply for the position.</p>
       
@@ -193,7 +279,7 @@ const JobApplication = () => {
           </div>
           
           <div className="form-group">
-            <label htmlFor="resume">Upload Resume (PDF)*</label>
+            <label htmlFor="resume">Upload Resume (PDF, DOC, DOCX)*</label>
             <input
               type="file"
               id="resume"
@@ -202,6 +288,9 @@ const JobApplication = () => {
               onChange={handleChange}
               required
             />
+            {applicationData.resume && (
+              <p className="file-info">Selected file: {applicationData.resume.name}</p>
+            )}
           </div>
           
           <div className="form-group">
@@ -269,9 +358,8 @@ const JobApplication = () => {
               value={applicationData.source}
               onChange={handleChange}
             >
-              <option value="">Select an option</option>
+              <option value="website">Company Website</option>
               <option value="job-board">Job Board (Indeed, LinkedIn, etc.)</option>
-              <option value="company-website">Company Website</option>
               <option value="referral">Employee Referral</option>
               <option value="social-media">Social Media</option>
               <option value="other">Other</option>
@@ -293,7 +381,20 @@ const JobApplication = () => {
           </div>
         </div>
 
-        <button type="submit" className="submit-button">Submit Application</button>
+        <button 
+          type="submit" 
+          className="submit-button"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <ArrowPathIcon className="animate-spin" />
+              <span>Submitting...</span>
+            </>
+          ) : (
+            'Submit Application'
+          )}
+        </button>
       </form>
     </div>
   );
