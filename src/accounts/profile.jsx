@@ -46,9 +46,11 @@ const Profile = () => {
         
         const token = localStorage.getItem('token');
         if (!token) {
+          console.error('No token found')
           throw new Error('Authentication token not found');
+          
         }
-
+        console.log('Making request to:', `${API_BASE_URL}/api/rest/v2/profile/`);
         const response = await axios.get(`${API_BASE_URL}/api/rest/v2/profile/`, {
           headers: { 
             'Authorization': `Token ${token}`,
@@ -69,7 +71,9 @@ const Profile = () => {
           }
         }));
       } catch (err) {
-        console.error('Error fetching profile data:', err);
+        console.error('Profile fetch error:', err);
+      console.log('Response data:', err.response?.data);
+      console.log('Status code:', err.response?.status)
         
         if (err.response?.status === 403) {
           setError('Session expired. Please log in again.');
