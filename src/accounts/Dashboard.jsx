@@ -4,7 +4,8 @@ import axios from 'axios';
 import { 
   FaFire, FaChartLine, FaClipboardList, FaCalendarAlt,
   FaWarehouse, FaPlus, FaSearch, FaUser, FaBell, FaCog,
-  FaTools, FaFileInvoiceDollar, FaUsersCog, FaDollarSign
+  FaTools, FaFileInvoiceDollar, FaUsersCog, FaDollarSign,
+  FaBars, FaTimes, FaExclamationTriangle
 } from 'react-icons/fa';
 import { Bar, Pie, Line } from 'react-chartjs-2';
 import {
@@ -56,56 +57,55 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-  try {
-    setLoading(true);
-    const token = localStorage.getItem('token');
-    if (!token) throw new Error('Authentication token missing');
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('Authentication token missing');
 
-    const response = await axios.get(API_BASE_URL, {
-      headers: { Authorization: `Token ${token}` },
-    });
-    
-    console.log('API Response:', response.data); // Debugging
+        const response = await axios.get(API_BASE_URL, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        
+        // Safely transform the API response
+        const transformedData = {
+          stats: [
+            { label: 'Jobs', value: response.data.job_count || 0 },
+            { label: 'Materials', value: response.data.material_count || 0 },
+            { label: 'Tasks', value: response.data.task_count || 0 },
+            { label: 'Notifications', value: response.data.notification_count || 0 }
+          ],
+          notifications: Array.isArray(response.data.notifications) ? response.data.notifications : [],
+          recent_users: Array.isArray(response.data.recent_users) ? response.data.recent_users : [],
+          recent_jobs: Array.isArray(response.data.recent_jobs) ? response.data.recent_jobs.slice(0, 5) : [],
+          upcoming_tasks: Array.isArray(response.data.upcoming_tasks) ? response.data.upcoming_tasks : [],
+          unread_notifications: response.data.unread_notifications || 0,
+          activity_chart: response.data.activity_chart || null,
+          project_timeline: response.data.project_timeline || null,
+          productivity_chart: response.data.productivity_chart || null
+        };
 
-    // Safely transform the API response
-    const transformedData = {
-      stats: [
-        { label: 'Jobs', value: response.data.job_count || 0 },
-        { label: 'Materials', value: response.data.material_count || 0 },
-        { label: 'Tasks', value: response.data.task_count || 0 },
-        { label: 'Notifications', value: response.data.notification_count || 0 }
-      ],
-      notifications: Array.isArray(response.data.notifications) ? response.data.notifications : [],
-      recent_users: Array.isArray(response.data.recent_users) ? response.data.recent_users : [],
-      recent_jobs: Array.isArray(response.data.recent_jobs) ? response.data.recent_jobs.slice(0, 5) : [],
-      upcoming_tasks: Array.isArray(response.data.upcoming_tasks) ? response.data.upcoming_tasks : [],
-      unread_notifications: response.data.unread_notifications || 0,
-      activity_chart: response.data.activity_chart || null,
-      project_timeline: response.data.project_timeline || null,
-      productivity_chart: response.data.productivity_chart || null
+        setUserData({
+          first_name: response.data.user?.first_name || '',
+          last_name: response.data.user?.last_name || '',
+          role: response.data.user?.role || 'welder'
+        });
+        
+        setDashboardData(transformedData);
+      } catch (err) {
+        console.error('Dashboard error:', err);
+        setError(err.response?.data?.error || err.message || 'Failed to load dashboard');
+        if (err.response?.status === 401) {
+          navigate('/login');
+        }
+      } finally {
+        setLoading(false);
+      }
     };
-
-    setUserData({
-      first_name: response.data.user?.first_name || '',
-      last_name: response.data.user?.last_name || '',
-      role: response.data.user?.role || 'welder'
-    });
-    
-    setDashboardData(transformedData);
-  } catch (err) {
-    console.error('Dashboard error:', err);
-    setError(err.response?.data?.error || err.message || 'Failed to load dashboard');
-    if (err.response?.status === 401) {
-      navigate('/login');
-    }
-  } finally {
-    setLoading(false);
-  }
-};
 
     fetchData();
   }, [navigate]);
@@ -153,41 +153,41 @@ function Dashboard() {
   };
 
   const renderChart = (chartData) => {
-  if (!chartData || !chartData.data || !chartData.data.datasets) {
-    return (
-      <div className="text-muted p-4">
-        <FaChartLine className="fs-1 mb-2" />
-        <p>No chart data available</p>
-      </div>
-    );
-  }
-
-  const commonOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-    },
-  };
-
-  switch (chartData.type) {
-    case 'bar':
-      return <Bar data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
-    case 'line':
-      return <Line data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
-    case 'pie':
-      return <Pie data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
-    default:
+    if (!chartData || !chartData.data || !chartData.data.datasets) {
       return (
         <div className="text-muted p-4">
-          <FaExclamationTriangle className="fs-1 mb-2" />
-          <p>Unsupported chart type</p>
+          <FaChartLine className="fs-1 mb-2" />
+          <p>No chart data available</p>
         </div>
       );
-  }
-};
+    }
+
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+      },
+    };
+
+    switch (chartData.type) {
+      case 'bar':
+        return <Bar data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
+      case 'line':
+        return <Line data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
+      case 'pie':
+        return <Pie data={chartData.data} options={{ ...commonOptions, ...chartData.options }} />;
+      default:
+        return (
+          <div className="text-muted p-4">
+            <FaExclamationTriangle className="fs-1 mb-2" />
+            <p>Unsupported chart type</p>
+          </div>
+        );
+    }
+  };
 
   if (loading) {
     return (
@@ -217,30 +217,43 @@ function Dashboard() {
 
   return (
     <div className="container-fluid p-0 vh-100 d-flex flex-column bg-light">
-      {/* Top Navigation Bar */}
+      {/* Top Navigation Bar - Mobile Friendly */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
-          <Link className="navbar-brand fw-bold" to="/">
-            <FaFire className="text-warning me-2" />
-            WeldTrack Pro
-          </Link>
+          <div className="d-flex align-items-center">
+            {/* Mobile menu button */}
+            <button 
+              className="navbar-toggler me-2 border-0" 
+              type="button" 
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Toggle navigation"
+            >
+              {sidebarOpen ? <FaTimes /> : <FaBars />}
+            </button>
+            
+            <Link className="navbar-brand fw-bold" to="/">
+              <FaFire className="text-warning me-2" />
+              <span className="d-none d-sm-inline">WeldTrack Pro</span>
+              <span className="d-inline d-sm-none">WTP</span>
+            </Link>
+          </div>
           
           <div className="d-flex align-items-center">
             {/* Notifications Dropdown */}
             <Dropdown className="me-3">
               <Dropdown.Toggle 
                 variant="dark" 
-                className="position-relative"
+                className="position-relative p-2"
                 id="dropdown-notifications"
               >
                 <FaBell />
                 {dashboardData.unread_notifications > 0 && (
                   <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {dashboardData.unread_notifications}
+                    {dashboardData.unread_notifications > 9 ? '9+' : dashboardData.unread_notifications}
                   </span>
                 )}
               </Dropdown.Toggle>
-              <Dropdown.Menu align="end">
+              <Dropdown.Menu align="end" className="dropdown-menu-end">
                 <Dropdown.Header>Notifications</Dropdown.Header>
                 {dashboardData.notifications.length > 0 ? (
                   dashboardData.notifications.map(notification => (
@@ -266,9 +279,9 @@ function Dashboard() {
 
             {/* Profile Dropdown */}
             <Dropdown>
-              <Dropdown.Toggle variant="dark" id="dropdown-profile">
+              <Dropdown.Toggle variant="dark" id="dropdown-profile" className="p-2">
                 <div className="d-flex align-items-center">
-                  <div className="me-2 d-none d-sm-block">
+                  <div className="me-2 d-none d-md-block">
                     {userData.first_name} {userData.last_name}
                   </div>
                   <div className="bg-primary rounded-circle p-2">
@@ -276,7 +289,7 @@ function Dashboard() {
                   </div>
                 </div>
               </Dropdown.Toggle>
-              <Dropdown.Menu align="end">
+              <Dropdown.Menu align="end" className="dropdown-menu-end">
                 <Dropdown.Item as={Link} to="/profile">
                   <FaUser className="me-2" /> Profile
                 </Dropdown.Item>
@@ -300,45 +313,56 @@ function Dashboard() {
 
       {/* Main Content */}
       <div className="container-fluid p-0 flex-grow-1 d-flex">
-        {/* Sidebar */}
-        <div className="d-flex flex-column flex-shrink-0 p-3 bg-white shadow-sm" style={{width: '280px'}}>
+        {/* Sidebar - Responsive */}
+        <div 
+          className={`d-flex flex-column flex-shrink-0 p-3 bg-white shadow-sm ${sidebarOpen ? 'mobile-sidebar-open' : 'mobile-sidebar-closed'}`}
+          style={{width: '280px'}}
+        >
           <ul className="nav nav-pills flex-column mb-auto">
             {currentConfig.tabs.map(tab => (
               <li className="nav-item" key={tab.id}>
                 <button 
                   className={`nav-link d-flex align-items-center ${activeTab === tab.id ? 'active' : ''}`}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setSidebarOpen(false); // Close sidebar on mobile after selection
+                  }}
                 >
-                  <tab.icon className="me-2" /> {tab.label}
+                  <tab.icon className="me-2" /> 
+                  <span className="d-none d-md-inline">{tab.label}</span>
+                  <span className="d-inline d-md-none" style={{fontSize: '0.8rem'}}>{tab.label.split(' ')[0]}</span>
                 </button>
               </li>
             ))}
           </ul>
           <hr />
           <div className="mb-3">
-            <h6 className="text-muted small">QUICK ACTIONS</h6>
+            <h6 className="text-muted small d-none d-md-block">QUICK ACTIONS</h6>
             {currentConfig.quickActions.map(action => (
               <Link 
                 key={action.label}
                 to={action.path} 
                 className="btn btn-outline-primary w-100 d-flex align-items-center justify-content-start mb-2"
+                onClick={() => setSidebarOpen(false)}
               >
-                <action.icon className="me-2" /> {action.label}
+                <action.icon className="me-2" /> 
+                <span className="d-none d-md-inline">{action.label}</span>
+                <span className="d-inline d-md-none" style={{fontSize: '0.8rem'}}>{action.label.split(' ')[0]}</span>
               </Link>
             ))}
           </div>
         </div>
 
         {/* Content Area */}
-        <div className="container-fluid p-4 overflow-auto">
+        <div className="container-fluid p-3 p-md-4 overflow-auto">
           {activeTab === 'overview' && (
-            <div className="row g-4">
+            <div className="row g-3">
               {/* Welcome Card */}
               <div className="col-12">
                 <div className="card border-0 shadow-sm">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div>
+                  <div className="card-body p-3 p-md-4">
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                      <div className="mb-2 mb-md-0">
                         <h4 className="mb-1">Welcome back, {userData.first_name}!</h4>
                         <p className="text-muted mb-0">
                           {userData.role === 'admin' && 'Here are your system-wide metrics and activities.'}
@@ -354,24 +378,24 @@ function Dashboard() {
                 </div>
               </div>
 
-              {/* Stats Cards */}
+              {/* Stats Cards - Responsive Grid */}
               {dashboardData.stats.length > 0 ? (
                 dashboardData.stats.map((stat, index) => (
-                  <div className="col-md-6 col-lg-3" key={index}>
+                  <div className="col-6 col-md-3" key={index}>
                     <div className="card border-0 shadow-sm h-100">
-                      <div className="card-body">
+                      <div className="card-body p-3">
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
-                            <h6 className="text-muted text-uppercase fs-7 fw-bold">{stat.label}</h6>
-                            <h2 className="mb-0 fw-bold">{stat.value}</h2>
+                            <h6 className="text-muted text-uppercase small fw-bold">{stat.label}</h6>
+                            <h3 className="mb-0 fw-bold">{stat.value}</h3>
                             {stat.trend && (
                               <small className={`text-${stat.trend === 'up' ? 'success' : 'danger'}`}>
                                 {stat.trend === 'up' ? '↑' : '↓'} {stat.change}
                               </small>
                             )}
                           </div>
-                          <div className={`bg-primary bg-opacity-10 p-3 rounded-circle`}>
-                            <FaChartLine className="text-primary fs-3" />
+                          <div className={`bg-primary bg-opacity-10 p-2 p-md-3 rounded-circle`}>
+                            <FaChartLine className="text-primary fs-4" />
                           </div>
                         </div>
                       </div>
@@ -386,12 +410,12 @@ function Dashboard() {
 
               {/* Role-specific content */}
               {userData.role === 'admin' && (
-                <div className="col-lg-8">
+                <div className="col-lg-8 col-md-12 mt-3">
                   <div className="card border-0 shadow-sm h-100">
                     <div className="card-header bg-white border-0">
                       <h5 className="mb-0">System Activity</h5>
                     </div>
-                    <div className="card-body">
+                    <div className="card-body" style={{height: '300px'}}>
                       {renderChart(dashboardData.activity_chart)}
                     </div>
                   </div>
@@ -399,12 +423,12 @@ function Dashboard() {
               )}
 
               {userData.role === 'client' && (
-                <div className="col-lg-8">
+                <div className="col-lg-8 col-md-12 mt-3">
                   <div className="card border-0 shadow-sm h-100">
                     <div className="card-header bg-white border-0">
                       <h5 className="mb-0">Project Timeline</h5>
                     </div>
-                    <div className="card-body">
+                    <div className="card-body" style={{height: '300px'}}>
                       {renderChart(dashboardData.project_timeline)}
                     </div>
                   </div>
@@ -412,12 +436,12 @@ function Dashboard() {
               )}
 
               {userData.role === 'welder' && (
-                <div className="col-lg-8">
+                <div className="col-lg-8 col-md-12 mt-3">
                   <div className="card border-0 shadow-sm h-100">
                     <div className="card-header bg-white border-0">
                       <h5 className="mb-0">My Productivity</h5>
                     </div>
-                    <div className="card-body">
+                    <div className="card-body" style={{height: '300px'}}>
                       {renderChart(dashboardData.productivity_chart)}
                     </div>
                   </div>
@@ -425,7 +449,7 @@ function Dashboard() {
               )}
 
               {/* Recent Items */}
-              <div className="col-lg-4">
+              <div className="col-lg-4 col-md-12 mt-3">
                 <div className="card border-0 shadow-sm h-100">
                   <div className="card-header bg-white border-0">
                     <h5 className="mb-0">
@@ -439,7 +463,7 @@ function Dashboard() {
                       {userData.role === 'admin' && (
                         dashboardData.recent_users.length > 0 ? (
                           dashboardData.recent_users.map(user => (
-                            <div key={user.id} className="list-group-item border-0">
+                            <div key={user.id} className="list-group-item border-0 p-3">
                               <div className="d-flex align-items-center">
                                 <div className="flex-shrink-0">
                                   <div className="bg-primary bg-opacity-10 p-2 rounded-circle">
@@ -454,14 +478,14 @@ function Dashboard() {
                             </div>
                           ))
                         ) : (
-                          <div className="list-group-item border-0 text-muted">No recent users</div>
+                          <div className="list-group-item border-0 text-muted p-3">No recent users</div>
                         )
                       )}
 
                       {userData.role === 'client' && (
                         dashboardData.recent_jobs.length > 0 ? (
                           dashboardData.recent_jobs.map(job => (
-                            <div key={job.id} className="list-group-item border-0">
+                            <div key={job.id} className="list-group-item border-0 p-3">
                               <div className="d-flex justify-content-between">
                                 <div>
                                   <h6 className="mb-1">{job.job_id}</h6>
@@ -474,14 +498,14 @@ function Dashboard() {
                             </div>
                           ))
                         ) : (
-                          <div className="list-group-item border-0 text-muted">No recent jobs</div>
+                          <div className="list-group-item border-0 text-muted p-3">No recent jobs</div>
                         )
                       )}
 
                       {userData.role === 'welder' && (
                         dashboardData.upcoming_tasks.length > 0 ? (
                           dashboardData.upcoming_tasks.map(task => (
-                            <div key={task.id} className="list-group-item border-0">
+                            <div key={task.id} className="list-group-item border-0 p-3">
                               <div className="d-flex justify-content-between align-items-start">
                                 <div>
                                   <h6 className="mb-1">{task.description}</h6>
@@ -494,7 +518,7 @@ function Dashboard() {
                             </div>
                           ))
                         ) : (
-                          <div className="list-group-item border-0 text-muted">No upcoming tasks</div>
+                          <div className="list-group-item border-0 text-muted p-3">No upcoming tasks</div>
                         )
                       )}
                     </div>
@@ -506,7 +530,7 @@ function Dashboard() {
 
           {/* Other tabs */}
           {activeTab !== 'overview' && (
-            <div className="card border-0 shadow-sm">
+            <div className="card border-0 shadow-sm mt-3">
               <div className="card-body">
                 <h4>{currentConfig.tabs.find(tab => tab.id === activeTab)?.label}</h4>
                 <div className="alert alert-info mt-3">
@@ -517,6 +541,25 @@ function Dashboard() {
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Mobile Bottom Navigation - Only visible on small screens */}
+      <div className="d-block d-lg-none fixed-bottom bg-white shadow-lg">
+        <div className="container">
+          <div className="row">
+            {currentConfig.tabs.slice(0, 4).map(tab => (
+              <div className="col-3 text-center p-2" key={tab.id}>
+                <button 
+                  className={`btn btn-link ${activeTab === tab.id ? 'text-primary' : 'text-muted'}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  <tab.icon className="fs-5 d-block mx-auto" />
+                  <small className="d-block">{tab.label.split(' ')[0]}</small>
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
