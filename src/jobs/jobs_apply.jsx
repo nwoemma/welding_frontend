@@ -39,19 +39,13 @@ const JobApplication = () => {
       }
 
       try {
-        // Verify token validity
-        await axios.get(
-          'https://welding-backend-vm1n.onrender.com/api/auth/verify_token/',
-          { headers: { 'Authorization': `Token ${token}` } }
-        );
-
         // Verify user role is welder
         const userResponse = await axios.get(
-          `https://welding-backend-vm1n.onrender.com/api/users/${userId}/`,
+          `https://welding-backend-vm1n.onrender.com/api/rest/v2/apply_for_job/${jobId}/`,
           { headers: { 'Authorization': `Token ${token}` } }
         );
 
-        if (userResponse.data.role !== 'welder') {
+        if (userResponse.data.role !== 'vendor') {
           toast.error('Only welders can apply for jobs');
           navigate('/jobs');
           return;

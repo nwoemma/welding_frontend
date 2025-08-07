@@ -43,7 +43,7 @@ function Dashboard() {
   const [userData, setUserData] = useState({
     first_name: '',
     last_name: '',
-    role: 'welder'
+    role: 'vendor'
   });
   const [dashboardData, setDashboardData] = useState({
     stats: [],
@@ -93,7 +93,7 @@ function Dashboard() {
         setUserData({
           first_name: response.data.user?.first_name || '',
           last_name: response.data.user?.last_name || '',
-          role: response.data.user?.role || 'welder'
+          role: response.data.user?.role || 'vendor'
         });
         
         setDashboardData(transformedData);
@@ -138,7 +138,7 @@ function Dashboard() {
         { label: 'Contact Support', icon: FaUser, path: '/support' }
       ]
     },
-    welder: {
+    vendor: {
       tabs: [
         { id: 'overview', label: 'My Tasks', icon: FaChartLine },
         { id: 'jobs', label: 'Assigned Jobs', icon: FaClipboardList },
@@ -220,7 +220,7 @@ function Dashboard() {
     );
   }
 
-  const currentConfig = roleConfig[userData.role] || roleConfig.welder;
+  const currentConfig = roleConfig[userData.role] || roleConfig.vendor;
 
   return (
     <div className="container-fluid p-0 vh-100 d-flex flex-column bg-light">
@@ -392,7 +392,7 @@ function Dashboard() {
                     <p className="text-muted mb-2 small">
                       {userData.role === 'admin' && 'Manage system metrics and activities'}
                       {userData.role === 'client' && 'Track your welding projects and requests'}
-                      {userData.role === 'welder' && 'View your assigned tasks and schedule'}
+                      {userData.role === 'vendor' && 'View your assigned tasks and schedule'}
                     </p>
                     <div className="badge bg-primary bg-opacity-10 text-primary align-self-start">
                       {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
@@ -428,7 +428,7 @@ function Dashboard() {
                   <h5 className="mb-0">
                     {userData.role === 'admin' && 'System Activity'}
                     {userData.role === 'client' && 'Project Timeline'}
-                    {userData.role === 'welder' && 'My Productivity'}
+                    {userData.role === 'vendor' && 'My Productivity'}
                   </h5>
                 </div>
                 <div className="card-body p-2" style={{height: '250px'}}>
@@ -446,7 +446,7 @@ function Dashboard() {
                   <h5 className="mb-0">
                     {userData.role === 'admin' && 'Recent Users'}
                     {userData.role === 'client' && 'Recent Jobs'}
-                    {userData.role === 'welder' && 'Upcoming Tasks'}
+                    {userData.role === 'vendor' && 'Upcoming Tasks'}
                   </h5>
                 </div>
                 <div className="card-body p-0">
@@ -497,7 +497,7 @@ function Dashboard() {
                       )
                     )}
 
-                    {userData.role === 'welder' && (
+                    {userData.role === 'vendor' && (
                       dashboardData.upcoming_tasks.length > 0 ? (
                         dashboardData.upcoming_tasks.map(task => (
                           <div key={task.id} className="list-group-item border-0 p-2">
