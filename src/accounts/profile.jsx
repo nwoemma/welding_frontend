@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-// Create configured axios instance
-const createApiInstance = (navigate) => {
+const Profile = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState('overview');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Initialize API instance with interceptors
   const api = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL || 'https://welding-backend-vm1n.onrender.com',
+    withCredentials: true,
   });
 
-  // Request interceptor
+  // Add request interceptor
   api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -19,28 +26,25 @@ const createApiInstance = (navigate) => {
     return Promise.reject(error);
   });
 
-  // Response interceptor
+  // Add response interceptor
   api.interceptors.response.use(
     response => response,
     async (error) => {
       if (error.response?.status === 401 || error.response?.status === 403) {
         localStorage.removeItem('token');
-        navigate('/login');
+        // Prevent redirect loop by checking current path
+        if (!location.pathname.startsWith('/login')) {
+          navigate('/login', {
+            state: { from: location.pathname },
+            replace: true
+          });
+        }
       }
       return Promise.reject(error);
     }
   );
 
-  return api;
-};
-
-const Profile = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const api = createApiInstance(navigate);
-  
+  // Profile data state
   const [profileData, setProfileData] = useState({
     first_name: '',
     last_name: '',
@@ -69,6 +73,7 @@ const Profile = () => {
     }
   });
 
+  // Error logging function
   const logErrorToBackend = async (errorData) => {
     try {
       await api.post('/api/log-error/', {
@@ -76,15 +81,14 @@ const Profile = () => {
         error: errorData.message || 'Unknown error',
         status: errorData.status,
         data: errorData.data,
-        stack: errorData.stack,
         timestamp: new Date().toISOString()
       });
     } catch (loggingError) {
-      console.error('Failed to log error to backend:', loggingError);
+      console.error('Failed to log error:', loggingError);
     }
   };
 
-  // Add the missing handleImageUpload function
+  // Handle image upload
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -93,14 +97,14 @@ const Profile = () => {
         setProfileData(prev => ({
           ...prev,
           profilePicPreview: reader.result,
-          profileImage: file
+          profile_pic: file
         }));
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Add the missing handleInputChange function
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     
@@ -121,11 +125,12 @@ const Profile = () => {
     }
   };
 
-  // Add the missing handleTabChange function
+  // Handle tab changes
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
+  // Fetch profile data on component mount
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -133,10 +138,9 @@ const Profile = () => {
         setError(null);
         
         const token = localStorage.getItem('token');
-        console.log('Current token:', token);
-        
         if (!token) {
-          throw new Error('Authentication token not found');
+          navigate('/login', { state: { from: location.pathname }, replace: true });
+          return;
         }
 
         const response = await api.get('/api/rest/v2/profile/');
@@ -157,14 +161,11 @@ const Profile = () => {
         await logErrorToBackend({
           message: err.message,
           status: err.response?.status,
-          data: err.response?.data,
-          stack: err.stack
+          data: err.response?.data
         });
 
-        if (err.response?.status === 403) {
-          setError('Session expired. Please log in again.');
-          localStorage.removeItem('token');
-          navigate('/login');
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          navigate('/login', { state: { from: location.pathname }, replace: true });
         } else {
           setError(err.message || 'Failed to load profile data');
         }
@@ -174,36 +175,30 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [navigate, api]);
-  
+  }, [navigate, location.pathname]);
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
     
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setError('Authentication token not found');
-      setIsLoading(false);
-      return;
-    }
-
-    const formData = new FormData();
-    
-    // Append all profile data to formData
-    Object.entries(profileData).forEach(([key, value]) => {
-      if (key === 'profileImage' && value instanceof File) {
-        formData.append('profile_pic', value);
-      } else if (key === 'social') {
-        formData.append(key, JSON.stringify(value));
-      } else if (key === 'notifications') {
-        formData.append(key, JSON.stringify(value));
-      } else if (!['profilePicPreview', 'profile_pic'].includes(key)) {
-        formData.append(key, value);
-      }
-    });
-
     try {
+      const formData = new FormData();
+      
+      // Append all profile data to formData
+      Object.entries(profileData).forEach(([key, value]) => {
+        if (key === 'profile_pic' && value instanceof File) {
+          formData.append('profile_pic', value);
+        } else if (key === 'social') {
+          formData.append(key, JSON.stringify(value));
+        } else if (key === 'notifications') {
+          formData.append(key, JSON.stringify(value));
+        } else if (!['profilePicPreview'].includes(key)) {
+          formData.append(key, value);
+        }
+      });
+
       const response = await api.put('/api/rest/v2/profile/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -222,18 +217,14 @@ const Profile = () => {
     } catch (err) {
       console.error('Error updating profile:', err);
       
-      // Log error to backend
       await logErrorToBackend({
         message: err.message,
         status: err.response?.status,
-        data: err.response?.data,
-        stack: err.stack
+        data: err.response?.data
       });
 
-      if (err.response?.status === 403) {
-        setError('Session expired. Please log in again.');
-        localStorage.removeItem('token');
-        navigate('/login');
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        navigate('/login', { state: { from: location.pathname }, replace: true });
       } else {
         setError(err.response?.data?.detail || 'Error updating profile. Please try again.');
       }
