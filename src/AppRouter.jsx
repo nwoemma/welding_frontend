@@ -24,6 +24,7 @@ import Profile from './accounts/profile';
 import JobUpdate from './jobs/job_update';
 import JobList from './jobs/job_list';
 import JobCreationForm from './jobs/job_creation'
+import JobApplicationForm from './jobs/job_apply';
 function AppRouter() {
   return (
     <Router>
@@ -63,6 +64,7 @@ function AppRouter() {
           <Route path="job_update/:id" element={<JobUpdate />} />
           <Route path="job_list" element={<JobList />} />
           <Route path='job_create' element= {<JobCreationForm/>}/>
+          <Route path='job_apply' element={<JobApplicationForm/>}/>
           {/* <Route path='admin' element= {<AdminRoute/>}/> */}
           {/* <Route path="chats" element={<Chats />} /> */}
 
