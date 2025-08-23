@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "./style.css"
 function Home() {
     const [isLoading, setIsLoading] = useState(true);
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import './Navbar.css'; // We'll create this CSS file for custom styles
+
 
 function Navbar() {
   const [isLoading, setIsLoading] = useState(true);
@@ -112,7 +111,7 @@ function Navbar() {
                 ></div>
               )}
 
-              {/* Mobile Menu (slides from left) */}
+              {/* Mobile Menu (slides from left)
               <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
                 <div className="navbar-nav h-100">
                   <NavLink 
@@ -198,7 +197,7 @@ function Navbar() {
                   </NavLink>
 
                   {/* Mobile View Buttons */}
-                  <div className="mt-auto">
+                  {/* <div className="mt-auto">
                     <NavLink
                       to="/register"
                       className="btn btn-primary w-100 py-2 text-uppercase mb-2"
@@ -215,7 +214,7 @@ function Navbar() {
                     </NavLink>
                   </div>
                 </div>
-              </div>
+              </div> */} 
 
               {/* Desktop Menu */}
               <div className="collapse navbar-collapse d-lg-flex">

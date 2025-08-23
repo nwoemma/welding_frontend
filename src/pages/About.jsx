@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 function About() {
   const [isLoading, setIsLoading] = useState(true);
 
