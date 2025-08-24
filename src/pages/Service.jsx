@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { Navigation, Autoplay } from 'swiper/modules';
 function Service() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,6 +28,23 @@ function Service() {
           ></div>
         </div>
       )}
+            <div className="container-fluid page-header pt-5 mb-6 wow fadeIn" data-wow-delay="0.1s">
+                <div className="container text-center pt-5">
+                    <div className="row justify-content-center">
+                        <div className="col-lg-7">
+                            <div className="bg-white p-5">
+                                <h1 className="display-6 text-uppercase mb-3 animated slideInDown">Sevices</h1>
+                                <nav aria-label="breadcrumb animated slideInDown">
+                                    <ol className="breadcrumb justify-content-center mb-0">
+                                        <li className="breadcrumb-item"><Link to="/">Home</Link></li>
+                                        <li className="breadcrumb-item" aria-current="page">Services</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         
         {/* Services Section */}
@@ -199,11 +219,20 @@ const TestimonialImages = () => (
 );
 
 const TestimonialCarousel = () => (
-  <div className="owl-carousel testimonial-carousel">
+  <Swiper
+    modules={[Navigation, Autoplay]}
+    spaceBetween={20}
+    slidesPerView={1}
+    navigation
+    autoplay={{ delay: 4000 }}
+    loop
+  >
     {testimonialsData.map((testimonial, index) => (
-      <TestimonialItem key={index} {...testimonial} />
+      <SwiperSlide key={index}>
+        <TestimonialItem {...testimonial} />
+      </SwiperSlide>
     ))}
-  </div>
+  </Swiper>
 );
 
 const TestimonialItem = ({ img, name, profession, rating, text }) => (
@@ -259,18 +288,69 @@ const servicesData = [
     title: "Steel Welding",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
+  {
+    imgSrc: "img/service-3.jpg",
+    title: "Pipe Welding",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+  {
+    imgSrc: "img/service-4.jpg",
+    title: "Custom Welding",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+  {
+    imgSrc: "img/service-5.jpg",
+    title: "Machine Repair",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+  {
+    imgSrc: "img/service-6.jpg",
+    title: "Fabrication",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+   {
+    imgSrc: "img/service-7.jpg",
+    title: "Aluminum Welding",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  },
+  {
+    imgSrc: "img/service-8.jpg",
+    title: "Industrial Welding",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  }
   // Add all 8 services here
 ];
 
 const testimonialsData = [
   {
     img: "img/testimonial-1.jpg",
-    name: "Client Name",
-    profession: "Profession",
+    name: "James Anderson",
+    profession: "Construction Manager",
     rating: 5,
-    text: "Dolores sed duo clita tempor justo dolor et stet lorem kasd labore dolore lorem ipsum."
+    text: "Their welding team did an outstanding job on our high-rise project. Strong, precise, and delivered on time. I’ll definitely hire them again."
   },
-  // Add other testimonials
+  {
+    img: "img/testimonial-2.jpg",
+    name: "Maria Rodriguez",
+    profession: "Architect",
+    rating: 4,
+    text: "I needed custom metal fabrication for a client’s design, and they exceeded expectations. Excellent craftsmanship and attention to detail."
+  },
+  {
+    img: "img/testimonial-3.jpg",
+    name: "Michael Johnson",
+    profession: "Factory Owner",
+    rating: 5,
+    text: "Our steel machinery broke down, and their welding repair got us back in operation within hours. Very reliable and skilled welders."
+  },
+  {
+    img: "img/testimonial-4.jpg",
+    name: "Sarah Thompson",
+    profession: "Homeowner",
+    rating: 5,
+    text: "I hired them for a custom gate and railing project. The results were stunning and durable. Friends and neighbors keep complimenting the work!"
+  }
+
 ];
 
 export default Service;
