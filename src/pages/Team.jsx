@@ -42,7 +42,7 @@ function Team() {
                 <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div className="team-item">
                         <div className="position-relative overflow-hidden">
-                            <img className="img-fluid w-100" src="img/team-1.jpg" alt=""/>
+                            <img className="img-fluid w-100" src="/img/team-1.jpg" alt=""/>
                             <div className="team-social">
                                 <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                                 <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -59,7 +59,7 @@ function Team() {
                 <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
                     <div className="team-item">
                         <div className="position-relative overflow-hidden">
-                            <img className="img-fluid w-100" src="img/team-2.jpg" alt=""/>
+                            <img className="img-fluid w-100" src="/img/team-2.jpg" alt=""/>
                             <div className="team-social">
                                 <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                                 <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -76,7 +76,7 @@ function Team() {
                 <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div className="team-item">
                         <div className="position-relative overflow-hidden">
-                            <img className="img-fluid w-100" src="img/team-3.jpg" alt=""/>
+                            <img className="img-fluid w-100" src="/img/team-3.jpg" alt=""/>
                             <div className="team-social">
                                 <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                                 <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -93,7 +93,7 @@ function Team() {
                 <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
                     <div className="team-item">
                         <div className="position-relative overflow-hidden">
-                            <img className="img-fluid w-100" src="img/team-4.jpg" alt=""/>
+                            <img className="img-fluid w-100" src="/img/team-4.jpg" alt=""/>
                             <div className="team-social">
                                 <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                                 <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>

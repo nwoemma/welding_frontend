@@ -36,32 +36,32 @@ function Home() {
           <div className="carousel-indicators">
             <button type="button" data-bs-target="#header-carousel" data-bs-slide-to="0" className="active"
               aria-current="true" aria-label="Slide 1">
-              <img className="img-fluid" src="img/carousel-1.jpg" alt="Image" />
+              <img className="img-fluid" src="/img/carousel-1.jpg" alt="Image" />
             </button>
             <button type="button" data-bs-target="#header-carousel" data-bs-slide-to="1" aria-label="Slide 2">
-              <img className="img-fluid" src="img/carousel-2.jpg" alt="Image" />
+              <img className="img-fluid" src="/img/carousel-2.jpg" alt="Image" />
             </button>
             <button type="button" data-bs-target="#header-carousel" data-bs-slide-to="2" aria-label="Slide 3">
-              <img className="img-fluid" src="img/carousel-3.jpg" alt="Image" />
+              <img className="img-fluid" src="/img/carousel-3.jpg" alt="Image" />
             </button>
           </div>
           <div className="carousel-inner">
             <div className="carousel-item active">
-              <img className="w-100" src="img/carousel-1.jpg" alt="Image" />
+              <img className="w-100" src="/img/carousel-1.jpg" alt="Image" />
               <div className="carousel-caption">
                 <h1 className="display-1 text-uppercase text-white mb-4 animated zoomIn">Best Metalcraft Solutions</h1>
                 <a href="#" className="btn btn-primary py-3 px-4">Explore More</a>
               </div>
             </div>
             <div className="carousel-item">
-              <img className="w-100" src="img/carousel-2.jpg" alt="Image" />
+              <img className="w-100" src="/img/carousel-2.jpg" alt="Image" />
               <div className="carousel-caption">
                 <h1 className="display-1 text-uppercase text-white mb-4 animated zoomIn">Best Metalcraft Solutions</h1>
                 <a href="#" className="btn btn-primary py-3 px-4">Explore More</a>
               </div>
             </div>
             <div className="carousel-item">
-              <img className="w-100" src="img/carousel-3.jpg" alt="Image" />
+              <img className="w-100" src="/img/carousel-3.jpg" alt="Image" />
               <div className="carousel-caption">
                 <h1 className="display-1 text-uppercase text-white mb-4 animated zoomIn">Best Metalcraft Solutions</h1>
                 <a href="#" className="btn btn-primary py-3 px-4">Explore More</a>
@@ -78,7 +78,7 @@ function Home() {
           <div className="row g-5">
             <div className="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
               <div className="about-img">
-                <img className="img-fluid w-100" src="img/about.jpg" alt="" />
+                <img className="img-fluid w-100" src="/img/about.jpg" alt="" />
               </div>
             </div>
             <div className="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
@@ -235,7 +235,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
               <div className="service-item">
                 <div className="service-inner pb-5">
-                  <img className="img-fluid w-100" src="img/service-1.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/service-1.jpg" alt="" />
                   <div className="service-text px-5 pt-4">
                     <h5 className="text-uppercase">Metal Works</h5>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tellus augue.</p>
@@ -247,7 +247,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
               <div className="service-item">
                 <div className="service-inner pb-5">
-                  <img className="img-fluid w-100" src="img/service-2.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/service-2.jpg" alt="" />
                   <div className="service-text px-5 pt-4">
                     <h5 className="text-uppercase">Steel welding</h5>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tellus augue.</p>
@@ -259,7 +259,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
               <div className="service-item">
                 <div className="service-inner pb-5">
-                  <img className="img-fluid w-100" src="img/service-3.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/service-3.jpg" alt="" />
                   <div className="service-text px-5 pt-4">
                     <h5 className="text-uppercase">pipe welding</h5>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tellus augue.</p>
@@ -271,7 +271,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
               <div className="service-item">
                 <div className="service-inner pb-5">
-                  <img className="img-fluid w-100" src="img/service-4.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/service-4.jpg" alt="" />
                   <div className="service-text px-5 pt-4">
                     <h5 className="text-uppercase">Custom welding</h5>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tellus augue.</p>
@@ -283,7 +283,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
               <div className="service-item">
                 <div className="service-inner pb-5">
-                  <img className="img-fluid w-100" src="img/service-5.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/service-5.jpg" alt="" />
                   <div className="service-text px-5 pt-4">
                     <h5 className="text-uppercase">Steel welding</h5>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tellus augue.</p>
@@ -295,7 +295,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
               <div className="service-item">
                 <div className="service-inner pb-5">
-                  <img className="img-fluid w-100" src="img/service-6.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/service-6.jpg" alt="" />
                   <div className="service-text px-5 pt-4">
                     <h5 className="text-uppercase">Metal Work</h5>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tellus augue.</p>
@@ -307,7 +307,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
               <div className="service-item">
                 <div className="service-inner pb-5">
-                  <img className="img-fluid w-100" src="img/service-7.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/service-7.jpg" alt="" />
                   <div className="service-text px-5 pt-4">
                     <h5 className="text-uppercase">Custom Welding</h5>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tellus augue.</p>
@@ -319,7 +319,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
               <div className="service-item">
                 <div className="service-inner pb-5">
-                  <img className="img-fluid w-100" src="img/service-8.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/service-8.jpg" alt="" />
                   <div className="service-text px-5 pt-4">
                     <h5 className="text-uppercase">Pipe Welding</h5>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tellus augue.</p>
@@ -419,7 +419,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
               <div className="team-item">
                 <div className="position-relative overflow-hidden">
-                  <img className="img-fluid w-100" src="img/team-1.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/team-1.jpg" alt="" />
                   <div className="team-social">
                     <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                     <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -436,7 +436,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
               <div className="team-item">
                 <div className="position-relative overflow-hidden">
-                  <img className="img-fluid w-100" src="img/team-2.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/team-2.jpg" alt="" />
                   <div className="team-social">
                     <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                     <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -453,7 +453,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
               <div className="team-item">
                 <div className="position-relative overflow-hidden">
-                  <img className="img-fluid w-100" src="img/team-3.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/team-3.jpg" alt="" />
                   <div className="team-social">
                     <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                     <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -470,7 +470,7 @@ function Home() {
             <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
               <div className="team-item">
                 <div className="position-relative overflow-hidden">
-                  <img className="img-fluid w-100" src="img/team-4.jpg" alt="" />
+                  <img className="img-fluid w-100" src="/img/team-4.jpg" alt="" />
                   <div className="team-social">
                     <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                     <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -499,16 +499,16 @@ function Home() {
             <div className="col-lg-5 wow fadeInUp" data-wow-delay="0.3s">
               <div className="testimonial-img">
                 <div className="animated flip infinite">
-                  <img className="img-fluid" src="img/testimonial-1.jpg" alt="" />
+                  <img className="img-fluid" src="/img/testimonial-1.jpg" alt="" />
                 </div>
                 <div className="animated flip infinite">
-                  <img className="img-fluid" src="img/testimonial-2.jpg" alt="" />
+                  <img className="img-fluid" src="/img/testimonial-2.jpg" alt="" />
                 </div>
                 <div className="animated flip infinite">
-                  <img className="img-fluid" src="img/testimonial-3.jpg" alt="" />
+                  <img className="img-fluid" src="/img/testimonial-3.jpg" alt="" />
                 </div>
                 <div className="animated flip infinite">
-                  <img className="img-fluid" src="img/testimonial-4.jpg" alt="" />
+                  <img className="img-fluid" src="/img/testimonial-4.jpg" alt="" />
                 </div>
               </div>
             </div>
@@ -516,7 +516,7 @@ function Home() {
               <div className="owl-carousel testimonial-carousel">
                 <div className="testimonial-item">
                   <div className="d-flex align-items-center mb-4">
-                    <img className="img-fluid" src="img/testimonial-1.jpg" alt="" />
+                    <img className="img-fluid" src="/img/testimonial-1.jpg" alt="" />
                     <div className="ms-3">
                       <div className="mb-2">
                         <i className="far fa-star text-primary"></i>
@@ -534,7 +534,7 @@ function Home() {
                 </div>
                 <div className="testimonial-item">
                   <div className="d-flex align-items-center mb-4">
-                    <img className="img-fluid" src="img/testimonial-2.jpg" alt="" />
+                    <img className="img-fluid" src="/img/testimonial-2.jpg" alt="" />
                     <div className="ms-3">
                       <div className="mb-2">
                         <i className="far fa-star text-primary"></i>
@@ -552,7 +552,7 @@ function Home() {
                 </div>
                 <div className="testimonial-item">
                   <div className="d-flex align-items-center mb-4">
-                    <img className="img-fluid" src="img/testimonial-3.jpg" alt="" />
+                    <img className="img-fluid" src="/img/testimonial-3.jpg" alt="" />
                     <div className="ms-3">
                       <div className="mb-2">
                         <i className="far fa-star text-primary"></i>
@@ -570,7 +570,7 @@ function Home() {
                 </div>
                 <div className="testimonial-item">
                   <div className="d-flex align-items-center mb-4">
-                    <img className="img-fluid" src="img/testimonial-4.jpg" alt="" />
+                    <img className="img-fluid" src="/img/testimonial-4.jpg" alt="" />
                     <div className="ms-3">
                       <div className="mb-2">
                         <i className="far fa-star text-primary"></i>

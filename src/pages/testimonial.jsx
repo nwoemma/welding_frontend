@@ -111,16 +111,16 @@ function Testimonial() {
             <div className="col-lg-5 wow fadeInUp" data-wow-delay="0.3s">
               <div className="testimonial-img">
                 <div className="animated flip infinite">
-                  <img className="img-fluid" src="img/testimonial-1.jpg" alt="" />
+                  <img className="img-fluid" src="/img/testimonial-1.jpg" alt="" />
                 </div>
                 <div className="animated flip infinite">
-                  <img className="img-fluid" src="img/testimonial-2.jpg" alt="" />
+                  <img className="img-fluid" src="/img/testimonial-2.jpg" alt="" />
                 </div>
                 <div className="animated flip infinite">
-                  <img className="img-fluid" src="img/testimonial-3.jpg" alt="" />
+                  <img className="img-fluid" src="/img/testimonial-3.jpg" alt="" />
                 </div>
                 <div className="animated flip infinite">
-                  <img className="img-fluid" src="img/testimonial-4.jpg" alt="" />
+                  <img className="img-fluid" src="/img/testimonial-4.jpg" alt="" />
                 </div>
               </div>
             </div>

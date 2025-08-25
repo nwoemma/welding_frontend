@@ -55,7 +55,7 @@ function About() {
             <div className="row g-5">
               <div className="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
                 <div className="about-img">
-                  <img className="img-fluid w-100" src="img/about.jpg" alt="About Weldork" />
+                  <img className="img-fluid w-100" src="/img/about.jpg" alt="About Weldork" />
                 </div>
               </div>
               <div className="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
@@ -166,7 +166,7 @@ function About() {
               <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                 <div className="team-item">
                   <div className="position-relative overflow-hidden">
-                    <img className="img-fluid w-100" src="img/team-1.jpg" alt="Alex Robin" />
+                    <img className="img-fluid w-100" src="/img/team-1.jpg" alt="Alex Robin" />
                     <div className="team-social">
                       <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                       <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -183,7 +183,7 @@ function About() {
               <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.4s">
                 <div className="team-item">
                   <div className="position-relative overflow-hidden">
-                    <img className="img-fluid w-100" src="img/team-2.jpg" alt="Andrew Bon" />
+                    <img className="img-fluid w-100" src="/img/team-2.jpg" alt="Andrew Bon" />
                     <div className="team-social">
                       <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                       <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -200,7 +200,7 @@ function About() {
               <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                 <div className="team-item">
                   <div className="position-relative overflow-hidden">
-                    <img className="img-fluid w-100" src="img/team-3.jpg" alt="Martin Tompson" />
+                    <img className="img-fluid w-100" src="/img/team-3.jpg" alt="Martin Tompson" />
                     <div className="team-social">
                       <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                       <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>
@@ -217,7 +217,7 @@ function About() {
               <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.6s">
                 <div className="team-item">
                   <div className="position-relative overflow-hidden">
-                    <img className="img-fluid w-100" src="img/team-4.jpg" alt="Clarabelle Samber" />
+                    <img className="img-fluid w-100" src="/img/team-4.jpg" alt="Clarabelle Samber" />
                     <div className="team-social">
                       <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-facebook-f"></i></a>
                       <a className="btn btn-square btn-dark mx-1" href=""><i className="fab fa-twitter"></i></a>

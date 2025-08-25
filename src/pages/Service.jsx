@@ -279,42 +279,42 @@ const Newsletter = () => (
 // Data
 const servicesData = [
   {
-    imgSrc: "img/service-1.jpg",
+    imgSrc: "/img/service-1.jpg",
     title: "Metal Works",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
   {
-    imgSrc: "img/service-2.jpg",
+    imgSrc: "/img/service-2.jpg",
     title: "Steel Welding",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
   {
-    imgSrc: "img/service-3.jpg",
+    imgSrc: "/img/service-3.jpg",
     title: "Pipe Welding",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
   {
-    imgSrc: "img/service-4.jpg",
+    imgSrc: "/img/service-4.jpg",
     title: "Custom Welding",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
   {
-    imgSrc: "img/service-5.jpg",
+    imgSrc: "/img/service-5.jpg",
     title: "Machine Repair",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
   {
-    imgSrc: "img/service-6.jpg",
+    imgSrc: "/img/service-6.jpg",
     title: "Fabrication",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
    {
-    imgSrc: "img/service-7.jpg",
+    imgSrc: "/img/service-7.jpg",
     title: "Aluminum Welding",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   },
   {
-    imgSrc: "img/service-8.jpg",
+    imgSrc: "/img/service-8.jpg",
     title: "Industrial Welding",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   }
@@ -323,28 +323,28 @@ const servicesData = [
 
 const testimonialsData = [
   {
-    img: "img/testimonial-1.jpg",
+    img: "/img/testimonial-1.jpg",
     name: "James Anderson",
     profession: "Construction Manager",
     rating: 5,
     text: "Their welding team did an outstanding job on our high-rise project. Strong, precise, and delivered on time. I’ll definitely hire them again."
   },
   {
-    img: "img/testimonial-2.jpg",
+    img: "/img/testimonial-2.jpg",
     name: "Maria Rodriguez",
     profession: "Architect",
     rating: 4,
     text: "I needed custom metal fabrication for a client’s design, and they exceeded expectations. Excellent craftsmanship and attention to detail."
   },
   {
-    img: "img/testimonial-3.jpg",
+    img: "/img/testimonial-3.jpg",
     name: "Michael Johnson",
     profession: "Factory Owner",
     rating: 5,
     text: "Our steel machinery broke down, and their welding repair got us back in operation within hours. Very reliable and skilled welders."
   },
   {
-    img: "img/testimonial-4.jpg",
+    img: "/img/testimonial-4.jpg",
     name: "Sarah Thompson",
     profession: "Homeowner",
     rating: 5,
