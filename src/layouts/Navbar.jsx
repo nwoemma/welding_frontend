@@ -53,7 +53,7 @@ function Navbar() {
       {/* Content */}
       <div style={{ display: isLoading ? 'none' : 'block' }}>
         {/* Topbar */}
-        <div className="container-fluid bg-primary text-white d-none d-lg-flex">
+        <div className="container-fluid bg-primary text-white fixed-top d-none d-lg-flex">
           <div className="container py-3">
             <div className="d-flex align-items-center">
               <NavLink to="/" className="text-decoration-none">
@@ -86,7 +86,10 @@ function Navbar() {
         </div>
 
         {/* Main Navbar */}
-        <div className={`container-fluid bg-white sticky-top ${scrolled ? 'shadow-sm' : ''}`}>
+        <div 
+          className={`container-fluid bg-white fixed-top ${scrolled ? 'shadow-sm' : ''}`} 
+          style={{ top: "70px", zIndex: 120 }}  // 👈 always sits BELOW the topbar
+        >
           <div className="container">
             <nav className="navbar navbar-expand-lg bg-white navbar-light p-lg-0">
               <NavLink to="/" className="navbar-brand d-lg-none text-decoration-none">
@@ -315,6 +318,7 @@ function Navbar() {
             </nav>
           </div>
         </div>
+        <div style={{ paddingTop: "110px" }}></div>
       </div>
     </>
   );

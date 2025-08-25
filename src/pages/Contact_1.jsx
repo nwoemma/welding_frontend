@@ -34,8 +34,7 @@ function Contact() {
                           <h1 className="display-6 text-uppercase mb-3 animated slideInDown">Contact</h1>
                           <nav aria-label="breadcrumb animated slideInDown">
                               <ol className="breadcrumb justify-content-center mb-0">
-                                  <li className="breadcrumb-item"><Link to="#">Home</Link></li>
-                                  <li className="breadcrumb-item"><Link to="#">Pages</Link></li>
+                                  <li className="breadcrumb-item"><Link to="/">Home</Link></li>
                                   <li className="breadcrumb-item" aria-current="page">Contact</li>
                               </ol>
                           </nav>

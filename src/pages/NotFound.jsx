@@ -43,7 +43,6 @@ function NotFound() {
                 <nav aria-label="breadcrumb animated slideInDown">
                   <ol className="breadcrumb justify-content-center mb-0">
                     <li className="breadcrumb-item"><Link to="/" className="text-decoration-none">Home</Link></li>
-                    <li className="breadcrumb-item"><Link to="#" className="text-decoration-none">Pages</Link></li>
                     <li className="breadcrumb-item active" aria-current="page">404</li>
                   </ol>
                 </nav>
