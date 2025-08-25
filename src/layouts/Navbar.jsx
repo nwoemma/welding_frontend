@@ -273,6 +273,30 @@ function Navbar() {
                         Contact
                       </NavLink>
 
+                      <NavLink
+                        to="/features"
+                        className="nav-item nav-link text-uppercase mb-2"
+                        onClick={closeMenu}
+                      >
+                        Features
+                      </NavLink>
+
+                      <NavLink
+                        to="/appointment"
+                        className="nav-item nav-link text-uppercase mb-2"
+                        onClick={closeMenu}
+                      >
+                        Appointment
+                      </NavLink>
+
+                      <NavLink
+                        to="/team"
+                        className="nav-item nav-link text-uppercase mb-2"
+                        onClick={closeMenu}
+                      >
+                        Our Team
+                      </NavLink>
+
                       <div className="mt-4">
                         <NavLink
                           to="/register"
