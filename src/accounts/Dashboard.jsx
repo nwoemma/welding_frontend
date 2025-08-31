@@ -145,9 +145,9 @@ function Dashboard() {
         { id: 'materials', label: 'Materials', icon: FaWarehouse }
       ],
       quickActions: [
-        { label: 'Log Work', icon: FaTools, path: '/work-log' },
-        { label: 'Request Materials', icon: FaWarehouse, path: '/materials' },
-        { label: 'Report Issue', icon: FaTools, path: '/issues' }
+        { label: 'Log Work', icon: FaTools, path: '/work_logs' },
+        { label: 'Request Materials', icon: FaWarehouse, path: '/job_materials' },
+        { label: 'Report Issue', icon: FaTools, path: '/report_issue' }
       ]
     }
   };

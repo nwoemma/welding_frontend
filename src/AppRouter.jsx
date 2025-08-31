@@ -25,6 +25,9 @@ import JobUpdate from './jobs/job_update';
 import JobList from './jobs/job_list';
 import JobCreationForm from './jobs/job_creation'
 import JobApplicationForm from './jobs/job_apply';
+import JobMaterials from './jobs/job_materials';
+import WorkLogs from './jobs/work_logs';
+import ReportIssue from './jobs/issues';
 function AppRouter() {
   return (
     <Router>
@@ -65,6 +68,9 @@ function AppRouter() {
           <Route path="job_list" element={<JobList />} />
           <Route path='job_create' element= {<JobCreationForm/>}/>
           <Route path='job_apply' element={<JobApplicationForm/>}/>
+          <Route path='report_issue' element={<ReportIssue/>}/>
+          <Route path='job_materials' element={<JobMaterials/>}/>
+          <Route path='work_logs' element={<WorkLogs/>}/>
           {/* <Route path='admin' element= {<AdminRoute/>}/> */}
           {/* <Route path="chats" element={<Chats />} /> */}
 
