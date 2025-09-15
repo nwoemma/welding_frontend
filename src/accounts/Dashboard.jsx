@@ -132,7 +132,7 @@ function Dashboard() {
         { id: 'invoices', label: 'Invoices', icon: FaDollarSign }
       ],
       quickActions: [
-        { label: 'Request Job', icon: FaPlus, path: '/jobs/request' },
+        { label: 'Request Job', icon: FaPlus, path: '/job_apply' },
         { label: 'View Quotes', icon: FaDollarSign, path: '/quotes' },
         { label: 'Contact Support', icon: FaUser, path: '/support' }
       ]
