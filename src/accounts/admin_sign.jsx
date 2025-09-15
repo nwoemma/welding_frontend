@@ -42,6 +42,7 @@ function AdminSignIn() {
       navigate('/admin_dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Sign in failed. Please try again.');
+      console.log('API Response:', response.data); // Debugging
     } finally {
       setIsLoading(false);
     }
